@@ -47,6 +47,27 @@ describe('Core.HttpClient module exports', () => {
         let cname = get.constructor.name;
         expect(cname).to.be.eq('Request');
     })
+    it('`get` handle execution success in Promise convention. Return non empty string.',(done)=>{
+        let get = HttpClient.get('http://google.com')
+        get.then((response) => {
+          expect(typeof response).to.be.eq('string')
+          done();
+        })
+    })
+    it('`get` handle execution failure in Promise convention. Return error object.',(done)=>{
+        let get = HttpClient.get('http://google.com/aasdasd')
+        get.catch((err) => {
+          expect(err).to.be.instanceOf(Object);
+          done();
+        })
+    })
+    it('`get` handle execution failure in Promise convention. Return 404 error status code.',(done)=>{
+        let get = HttpClient.get('http://google.com/aasdasd')
+        get.catch((err) => {
+          expect(err.statusCode).to.be.eq(404);
+          done();
+        })
+    })
   })
 
 })

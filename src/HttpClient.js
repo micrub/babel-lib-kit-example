@@ -1,6 +1,11 @@
-import request from 'request-promise-native';
+
 import isURL from 'validator/lib/isURL';
 import { inherits } from 'util';
+
+function request() {
+
+}
+
 
 let urlValidationOptions = {protocols: ['http', 'https'],
   require_protocol:true};

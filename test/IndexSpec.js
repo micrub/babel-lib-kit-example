@@ -18,4 +18,9 @@ describe('Core module exports', () => {
     expect(Core.Async.constructor.name).to.be.eq('Object');
   })
 
+  it('should have property `HttpClient` that is instance of `Object` and has `Object` constructor.', () => {
+    expect(Core.HttpClient).to.be.instanceOf(Object);
+    expect(Core.HttpClient.constructor.name).to.be.eq('Object');
+  })
+
 })

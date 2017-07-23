@@ -17,12 +17,24 @@ describe('Core.HttpClient module exports', () => {
   describe('`get` function throws if first argument is empty string, or not a string',()=>{
     it('`get` function throws if first argument is empty string, or not a string',()=>{
       try {
-        let g = HttpClient.get('')
-        console.log(g);
+        let get = HttpClient.get('')
       } catch (e) {
         /* handle error */
         expect(e).to.be.instanceOf(Object);
       }
+    })
+    it('`get` function throws if first argument is invalid url.',()=>{
+      try {
+        let get = HttpClient.get('httx://google.com')
+      } catch (e) {
+        /* handle error */
+        console.log(e);
+        expect(e).to.be.instanceOf(Object);
+      }
+    })
+    it('`get` function should return Promise in case of valid url.',()=>{
+        let get = HttpClient.get('http://google.com')
+        expect(get).to.be.instanceOf(Object);
     })
   })
 

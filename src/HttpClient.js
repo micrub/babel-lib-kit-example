@@ -1,5 +1,6 @@
 import request from 'request-promise-native';
 import isURL from 'validator/lib/isURL';
+import { inherits } from 'util';
 
 let urlValidationOptions = {protocols: ['http', 'https'],
   require_protocol:true};
@@ -22,7 +23,11 @@ function get(url) {
     if (!isURL(url, urlValidationOptions)) {
       return new InvalidUrlError(url)
     } else {
-      const config = { uri: url, method: 'get', timeout: 1000, responseType: 'text',
+      const config = {
+        uri: url,
+        method: 'get',
+        timeout: 1000,
+        responseType: 'text',
         maxRedirects: 5};
       return request(config);
     }
@@ -31,7 +36,12 @@ function get(url) {
   }
 }
 
-const HttpClient = { get, errors: {InvalidUrlError, EmptyUrlError}, Request:
-  request };
+let errors = {InvalidUrlError, EmptyUrlError};
+for (var prop in errors) {
+  let errorFnk = errors[prop];
+  inherits(errorFnk, Error);
+}
+
+const HttpClient = { get, errors, Request: request };
 
 export default HttpClient;

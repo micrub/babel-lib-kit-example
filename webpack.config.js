@@ -7,7 +7,7 @@ const fs = require('fs');
 
 let CopyWebpackPlugin = require('copy-webpack-plugin');
 let WebpackBeforeBuildPlugin = require('before-build-webpack');
-let WebpackShellPlugin = require('./lib/WebpackShellPlugin');
+let WebpackShellPlugin = require('webpack-shell-plugin');
 
 let packageJson = require('./package.json');
 
@@ -54,7 +54,7 @@ const copyOptions = [
                presets : ["env"],
                plugins : [
                  require("babel-plugin-transform-runtime"),
-                 require("transform-async-to-generator")
+                 require("babel-plugin-transform-async-to-generator")
                ]
              }
          }]

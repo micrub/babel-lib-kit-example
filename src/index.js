@@ -1,12 +1,9 @@
 /* jshint esnext:true */
 
-import debug from 'debug';
-let d = debug('Core');
-d.enabled= true;
+import Async from './async/index';
 
-let Core = {};
-
-console.log('Loaded');
-d('D Loaded');
+const Core = {
+  Async
+};
 
 export default Core;

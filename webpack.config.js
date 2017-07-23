@@ -52,7 +52,10 @@ const copyOptions = [
              options: {
                cacheDirectory: true,
                presets : ["env"],
-               plugins : [require("babel-plugin-transform-runtime")]
+               plugins : [
+                 require("babel-plugin-transform-runtime"),
+                 require("transform-async-to-generator")
+               ]
              }
          }]
      }

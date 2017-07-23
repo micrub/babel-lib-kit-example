@@ -15,6 +15,7 @@
         ]
     ],
     "plugins": [
-        "transform-runtime"
+        "transform-runtime",
+        "transform-async-to-generator"
     ]
 }

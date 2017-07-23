@@ -47,6 +47,6 @@ for (var prop in errors) {
   inherits(errorFnk, Error);
 }
 
-const HttpClient = { get, errors, Request: request };
+const HttpClient = { get, errors };
 
 export default HttpClient;

@@ -1,6 +1,12 @@
 import { expect } from 'chai';
-import debug from 'debug';
 import Core from '../src/index';
+
+let Utils = Core.Utils;
+
+const BASE_NAME = Utils.jsBasename(__filename);
+
+import debug from 'debug';
+const dbg = debug(BASE_NAME);
 
 
 describe('Core.HttpClient module exports interface tests.', () => {
@@ -13,6 +19,9 @@ describe('Core.HttpClient module exports interface tests.', () => {
 
   it('should have `get` function property', () => {
     expect(HttpClient.get).to.be.instanceOf(Function);
+  })
+  it('should have `request` function property', () => {
+    expect(HttpClient.request).to.be.instanceOf(Function);
   })
 
   describe('HttpClient.errors',() => {

@@ -1,11 +1,9 @@
 
+import http from 'http';
 import isURL from 'validator/lib/isURL';
 import { inherits } from 'util';
 
-function request() {
-
-}
-
+const request = http.get;
 
 let urlValidationOptions = {protocols: ['http', 'https'],
   require_protocol:true};
@@ -47,6 +45,6 @@ for (var prop in errors) {
   inherits(errorFnk, Error);
 }
 
-const HttpClient = { get, errors };
+const HttpClient = { get, errors, request };
 
 export default HttpClient;

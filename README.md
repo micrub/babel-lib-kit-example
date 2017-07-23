@@ -1,4 +1,4 @@
-# Babel lib kit - starter kit
+# Babel lib kit for Node.js - starter kit
 
 Starter kit using based on `yarn`, `babel-presets-env` and `Webpack`.
 

@@ -1,6 +1,23 @@
 
 import path from 'path';
 
+let START_HASH_VALUE = 5381;
+
+function reduceToHash(array) {
+  return array.reduce((prev, curr) => {
+    return ((prev << 5) + prev) + curr;
+  }, START_HASH_VALUE);
+}
+
+function djb2(input) {
+  if (input && input.constructor && input.constructor.name === 'Array'  && input.length) {
+    return reduceToHash(input);
+  } else if(input && typeof input === 'string'  && input.length){
+    return reduceToHash( input.split('').map((str) => { return str.charCodeAt(0) }) );
+  } else {
+    return new Error('Empty input.' + JSON.stringify(input))
+  }
+}
 function jsBasename(filename) {
   if (typeof filename === 'string' && filename.length) {
     return path.basename( filename, '.js' ) || new Error('No basename detected for:' + filename);
@@ -9,6 +26,6 @@ function jsBasename(filename) {
   }
 }
 
-let Utils = { jsBasename };
+let Utils = { jsBasename , djb2 };
 
 export default Utils;

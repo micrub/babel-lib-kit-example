@@ -35,8 +35,7 @@ describe('Core.Utils module exports tests.', () => {
     })
     it('should return baseName on js extension path string.', () => {
       let result = Utils.jsBasename(__filename);
-      //console.log(result);
-      expect(result).to.be.instanceOf(Object);
+      expect(result).to.be.eq('UtilsSpec')
     })
   })
 

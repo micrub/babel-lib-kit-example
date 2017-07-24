@@ -43,50 +43,65 @@ function hasHeader(header,headers) {
 }
 
 function returnPromise(config) {
+
   return new Promise((resolve, reject)=>{
     let req = request(config, (response) => {
-      if (response.statusCode < 200 || response.statusCode > 299) {
+      let statusCode = response.statusCode;
+      if (statusCode < 200) {
         reject(new Error('Failed to load page, status code: ' + response.statusCode));
-      } else if (response.statusCode >= 300 && response.statusCode < 400 && hasHeader('location', response.headers)) {
-        //let location = response.headers[hasHeader('location', response.headers)]
-
-        //if (self.followAllRedirects) {
-          //redirectTo = location
-        //} else if (self.followRedirect) {
-          //switch (self.method) {
-            //case 'PATCH':
-              //case 'PUT':
-              //case 'POST':
-              //case 'DELETE':
-              //// Do not follow redirects
-              //break
-            //default:
-              //redirectTo = location
-            //break
-          //}
-        //}
+      } else if (statusCode >= 200 && statusCode < 299){
+        let body = [];
+        response.on('data', (chunk) => body.push(chunk));
+        response.on('end', () => resolve(body.join('')));
+      } else if (response.statusCode >= 300 && response.statusCode < 400 ) {
+        if (config.maxRedirects) {
+          let location = response.headers.location;
+          if (location && isURL(location)) {
+            let redirectCount = 0;
+            if (config.redirectCount === null) {
+              redirectCount = 1;
+            }else{
+              redirectCount = redirectCount + 1;
+            }
+            //dbg(location, redirectCount ,maxRedirects);
+            if (redirectCount >= config.maxRedirects) {
+              reject(new Error('Maximum redirects limit reached: ' + redirectCount + ' out of ' + config.maxRedirects));
+            }else{
+              resolve(get(location, redirectCount))
+            }
+          }else{
+            reject(new Error('Not redirecting to invalid location : ' + location));
+          }
+        }else{
+          resolve(get(location))
+        }
+      } else {
+        if (statusCode === 404) {
+          reject(new NotFoundError(location, response.body));
+        } else {
+          reject(new Error('Http status code: ' + statusCode));
+        }
       }
-      if (redirectTo) {
-      }
-      let body = [];
-      response.on('data', (chunk) => body.push(chunk));
-      response.on('end', () => resolve(body.join('')));
     })
     req.on('error', (err) => {
-      reject(error);
+      reject(err);
     })
     req.end();
   })
 }
 
-function get(url) {
+function get(url, isRedirect = null) {
   if (typeof url === 'string' && url.length) {
     if (!isURL(url, urlValidationOptions)) {
       return new InvalidUrlError(url)
     } else {
       const parsedUrl = urlParse(url);
-      const defaults = { method: 'get', timeout: 1000 };
-      const config = { ...defaults, ...parsedUrl };
+      const defaults = { method: 'get', timeout: 1000, maxRedirects: 5 };
+      let redirectCount = null;
+      if (isRedirect !== null) {
+        redirectCount = isRedirect;
+      }
+      const config = { ...defaults, ...parsedUrl, redirectCount };
       return returnPromise(config);
     }
   } else {

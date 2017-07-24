@@ -16,7 +16,7 @@ describe('Core.HttpClient module exports functional tests.', () => {
     expect(HttpClient.get).to.be.instanceOf(Function);
   })
 
-  describe('`get` function input handling.',()=>{
+  describe('`get` function input handle tests.',()=>{
     it('should return EmptyUrlError if first argument is empty string, or not a string',()=>{
         let get = HttpClient.get('')
         expect(get).to.be.instanceOf(HttpClient.errors.EmptyUrlError);
@@ -33,6 +33,7 @@ describe('Core.HttpClient module exports functional tests.', () => {
   })
 
   describe('`get` Promisified execution handling tests.', ()=> {
+
     it('execution success . Return non empty string.',(done)=>{
         let get = HttpClient.get('http://google.com')
         get.then((response) => {
@@ -40,20 +41,13 @@ describe('Core.HttpClient module exports functional tests.', () => {
           done();
         })
     })
-    //it('execution failure . Return error object.',(done)=>{
-        //let get = HttpClient.get('http://google.com/aasdasd')
-        //get.catch((err) => {
-          //expect(err).to.be.instanceOf(Object);
-          //done();
-        //})
-    //})
-    //it('execution failure . Return 404 error status code.',(done)=>{
-        //let get = HttpClient.get('http://google.com/aasdasd')
-        //get.catch((err) => {
-          //expect(err.statusCode).to.be.eq(404);
-          //done();
-        //})
-    //})
+    it('execution failure . Return 404 error .',(done)=>{
+        let get = HttpClient.get('http://google.com/aasdasd')
+        get.catch((err) => {
+          expect(err).to.be.instanceOf(HttpClient.errors.NotFoundError);
+          done();
+        })
+    })
   })
 
 })

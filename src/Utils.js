@@ -1,5 +1,20 @@
 
+import Constants from './Constants';
+
 import path from 'path';
+import debug from 'debug';
+
+const C = Constants;
+
+const NS = C.PACKAGE_NS;
+const SP = C.SP;
+
+const UNDETECTED = C.UNDETECTED;
+
+function dbgFactory(filename) {
+  filename = jsBasename(filename) || UNDETECTED;
+  return debug([NS, filename ].join(SP));
+}
 
 let START_HASH_VALUE = 5381;
 
@@ -32,6 +47,6 @@ function jsBasename(filename) {
   }
 }
 
-let Utils = { jsBasename , djb2 };
+let Utils = { jsBasename , djb2, dbgFactory, NS, SP };
 
 export default Utils;

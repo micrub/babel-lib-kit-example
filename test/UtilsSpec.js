@@ -14,6 +14,20 @@ describe('Core.Utils module exports tests.', () => {
   it('should have property `jsBasename` that is instance of `Function`.', () => {
     expect(Utils.jsBasename).to.be.instanceOf(Function);
   })
+  it('should have property `NS` that is non empty string.', () => {
+    let C = Utils.NS;
+    expect(typeof C).to.be.eq('string')
+    expect(C.length > 0).to.be.true;
+  })
+  it('should have property `SP` that is non empty string.', () => {
+    let C = Utils.SP;
+    expect(typeof C).to.be.eq('string')
+    expect(C.length > 0).to.be.true;
+  })
+  it('should have property `SP` equals to "-".', () => {
+    let C = Utils.SP;
+    expect(C).to.be.eq('-')
+  })
   it('should have property `djb2` that is instance of `Function`.', () => {
     expect(Utils.djb2).to.be.instanceOf(Function);
   })

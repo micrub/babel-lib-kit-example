@@ -43,13 +43,10 @@ describe('Core.Utils module exports tests.', () => {
     let tsHash = () => {
       let d = new Date();
       let o = d.toUTCString() + ':' + d.getUTCMilliseconds()
-      let h = (input) => {
-      }
-      return h(o).replace('.','-');
+      return Utils.djb2(o);
     }
     it('should return Error on non js extension path string.', () => {
-      let result = Utils.jsBasename('/tmp/test-' + new Date() + '.some');
-      console.log(result);
+      let result = Utils.jsBasename('/tmp/test-' + tsHash() + '.some');
       expect(result).to.be.instanceOf(Object);
     })
     it('should return baseName on js extension path string.', () => {

@@ -27,7 +27,6 @@ describe('Core.HttpClient module exports functional tests.', () => {
     it('`get` function should return Promise in case of valid url.',()=>{
         let get = HttpClient.get('http://google.com')
         let cname = get.constructor.name;
-        console.log(cname);
         expect(cname).to.be.eq('ClientRequest');
     })
     //it('`get` handle execution success in Promise convention. Return non empty string.',(done)=>{

@@ -19,10 +19,16 @@ function djb2(input) {
   }
 }
 function jsBasename(filename) {
+  const EXT = '.js'
   if (typeof filename === 'string' && filename.length) {
-    return path.basename( filename, '.js' ) || new Error('No basename detected for:' + filename);
+    if (path.extname(filename) === EXT) {
+      return path.basename( filename, EXT )
+        || new Error('No basename detected for :' + filename);
+    } else {
+      return new Error('Passed filename is not `'+EXT+'` file : ' + filename);
+    }
   } else {
-    return new Error('Passed filename is not a string or empty: ' + filename);
+    return new Error('Passed filename is not a string or empty : ' + filename);
   }
 }
 

@@ -13,7 +13,8 @@ const UNDETECTED = C.UNDETECTED;
 
 function dbgFactory(filename) {
   filename = jsBasename(filename) || UNDETECTED;
-  return debug([NS, filename ].join(SP));
+  const DBG_NS = [NS, filename ].join(SP);
+  return debug(DBG_NS);
 }
 
 let START_HASH_VALUE = 5381;

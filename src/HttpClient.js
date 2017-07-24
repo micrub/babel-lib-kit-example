@@ -5,6 +5,8 @@ import { parse as urlParse } from 'url';;
 import isURL from 'validator/lib/isURL';
 import { inherits } from 'util';
 
+const dbg = Utils.dbgFactory(__filename);
+
 const request = http.get;
 
 let urlValidationOptions = {protocols: ['http', 'https'],

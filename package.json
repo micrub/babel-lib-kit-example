@@ -6,8 +6,8 @@
   "author": "Michael Rubanov <mrubanov@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --compilers js:babel-register",
-    "test:watch": "./node_modules/.bin/mocha  --compilers js:babel-register --reporter min --watch",
+    "test": "DEBUG=babel-lib-kit* ./node_modules/.bin/mocha --compilers js:babel-register",
+    "test:watch": "DEBUG=babel-lib-kit* ./node_modules/.bin/mocha  --compilers js:babel-register --reporter min --watch",
     "build": "./node_modules/.bin/webpack"
   },
   "dependencies": {

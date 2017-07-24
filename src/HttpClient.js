@@ -12,6 +12,12 @@ const request = http.get;
 let urlValidationOptions = {protocols: ['http', 'https'],
   require_protocol:true};
 
+function NotFoundError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.message = 'Passed url not found: 404 ' + message;
+  this.extra = extra;
+};
 function InvalidUrlError(message, extra) {
   Error.captureStackTrace(this, this.constructor);
   this.name = this.constructor.name;
@@ -24,6 +30,13 @@ function EmptyUrlError(message, extra) {
   this.message = 'Url must be NON empty string.';
   this.extra = extra;
 };
+
+let errors = {InvalidUrlError, EmptyUrlError, NotFoundError};
+
+for (var prop in errors) {
+  let errorFnk = errors[prop];
+  inherits(errorFnk, Error);
+}
 
 function hasHeader(header,headers) {
   return headers.includes(header)
@@ -81,11 +94,6 @@ function get(url) {
   }
 }
 
-let errors = {InvalidUrlError, EmptyUrlError};
-for (var prop in errors) {
-  let errorFnk = errors[prop];
-  inherits(errorFnk, Error);
-}
 
 const HttpClient = { get, errors, request };
 

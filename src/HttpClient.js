@@ -1,5 +1,6 @@
 
 import http from 'http';
+import { parse as urlParse } from 'url';;
 import isURL from 'validator/lib/isURL';
 import { inherits } from 'util';
 
@@ -21,18 +22,21 @@ function EmptyUrlError(message, extra) {
   this.extra = extra;
 };
 
+function returnPromise(req) {
+  return new Promise((resolve, reject)=>{
+    resolve({result :true});
+  })
+}
+
 function get(url) {
   if (typeof url === 'string' && url.length) {
     if (!isURL(url, urlValidationOptions)) {
       return new InvalidUrlError(url)
     } else {
-      const config = {
-        uri: url,
-        method: 'get',
-        timeout: 1000,
-        responseType: 'text',
-        maxRedirects: 5};
-      return request(config);
+      const parsedUrl = urlParse(url);
+      const defaults = { method: 'get', timeout: 1000 };
+      const config = { ...defaults, ...parsedUrl };
+      return returnPromise(request(config));
     }
   } else {
     return new EmptyUrlError();

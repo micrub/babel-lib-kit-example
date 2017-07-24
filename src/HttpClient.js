@@ -1,5 +1,6 @@
 
 import http from 'http';
+import Utils from './Utils';
 import { parse as urlParse } from 'url';;
 import isURL from 'validator/lib/isURL';
 import { inherits } from 'util';
@@ -22,9 +23,44 @@ function EmptyUrlError(message, extra) {
   this.extra = extra;
 };
 
-function returnPromise(req) {
+function hasHeader(header,headers) {
+  return headers.includes(header)
+}
+
+function returnPromise(config) {
   return new Promise((resolve, reject)=>{
-    resolve({result :true});
+    let req = request(config, (response) => {
+      if (response.statusCode < 200 || response.statusCode > 299) {
+        reject(new Error('Failed to load page, status code: ' + response.statusCode));
+      } else if (response.statusCode >= 300 && response.statusCode < 400 && hasHeader('location', response.headers)) {
+        //let location = response.headers[hasHeader('location', response.headers)]
+
+        //if (self.followAllRedirects) {
+          //redirectTo = location
+        //} else if (self.followRedirect) {
+          //switch (self.method) {
+            //case 'PATCH':
+              //case 'PUT':
+              //case 'POST':
+              //case 'DELETE':
+              //// Do not follow redirects
+              //break
+            //default:
+              //redirectTo = location
+            //break
+          //}
+        //}
+      }
+      if (redirectTo) {
+      }
+      let body = [];
+      response.on('data', (chunk) => body.push(chunk));
+      response.on('end', () => resolve(body.join('')));
+    })
+    req.on('error', (err) => {
+      reject(error);
+    })
+    req.end();
   })
 }
 
@@ -36,7 +72,7 @@ function get(url) {
       const parsedUrl = urlParse(url);
       const defaults = { method: 'get', timeout: 1000 };
       const config = { ...defaults, ...parsedUrl };
-      return returnPromise(request(config));
+      return returnPromise(config);
     }
   } else {
     return new EmptyUrlError();

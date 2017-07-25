@@ -6,7 +6,7 @@
   "author": "Michael Rubanov <mrubanov@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "DEBUG=babel-lib-kit* ./node_modules/.bin/mocha --compilers js:babel-register --timeout 3000",
+    "test": "DEBUG=babel-lib-kit* ./node_modules/.bin/mocha --compilers js:babel-register",
     "test:watch": "DEBUG=babel-lib-kit* ./node_modules/.bin/mocha  --compilers js:babel-register --reporter min --watch",
     "build": "./node_modules/.bin/webpack"
   },

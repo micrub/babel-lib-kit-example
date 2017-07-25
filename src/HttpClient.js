@@ -82,12 +82,12 @@ function returnPromise(config) {
             if (redirectCount >= config.maxRedirects) {
               reject(new Error('Maximum redirects limit reached: ' + redirectCount + ' out of ' + config.maxRedirects));
             }else{
-              //if (config.timeout) {
-                //let timeoutTimer = setTimeout(function () {
-                  //req.abort()
-                  //reject(new TimeoutError())
-                //}, config.timeout)
-              //}
+              if (config.timeout) {
+                let timeoutTimer = setTimeout(function () {
+                  req.abort()
+                  reject(new TimeoutError())
+                }, config.timeout)
+              }
               resolve(get(location, redirectCount))
             }
           }else{
@@ -107,14 +107,14 @@ function returnPromise(config) {
     })
     // Set additional timeout on socket - in case if remote
     // server freeze after sending headers
-    //if (config.timeout) { // only works on node 0.6+
-      //req.setTimeout(config.timeout, function () {
-        //if (req) {
-          //req.abort()
-          //reject(new SocketTimeoutError())
-        //}
-      //})
-    //}
+    if (config.timeout) { // only works on node 0.6+
+      req.setTimeout(config.timeout, function () {
+        if (req) {
+          req.abort()
+          reject(new SocketTimeoutError())
+        }
+      })
+    }
     req.on('error', (err) => {
       console.log(err);
       reject(err);

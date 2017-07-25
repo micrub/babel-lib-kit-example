@@ -19,21 +19,21 @@ describe('Core.HttpClient module exports functional tests.', () => {
     expect(HttpClient.get).to.be.instanceOf(Function);
   })
 
-  //describe('`get` function input handle tests.',()=>{
-    //it('should return EmptyUrlError if first argument is empty string, or not a string',()=>{
-        //let get = HttpClient.get('')
-        //expect(get).to.be.instanceOf(HttpClient.errors.EmptyUrlError);
-    //})
-    //it('should return InvalidUrlError if first argument is invalid url.',()=>{
-        //let get = HttpClient.get('httx://google.com')
-        //expect(get).to.be.instanceOf(HttpClient.errors.InvalidUrlError);
-    //})
-    //it('should return Promise in case of valid url.',()=>{
-        //let get = HttpClient.get('http://google.com')
-        //let cname = get.constructor.name;
-        //expect(get).to.be.instanceOf(Promise)
-    //})
-  //})
+  describe('`get` function input handle tests.',()=>{
+    it('should return EmptyUrlError if first argument is empty string, or not a string',()=>{
+        let get = HttpClient.get('')
+        expect(get).to.be.instanceOf(HttpClient.errors.EmptyUrlError);
+    })
+    it('should return InvalidUrlError if first argument is invalid url.',()=>{
+        let get = HttpClient.get('httx://google.com')
+        expect(get).to.be.instanceOf(HttpClient.errors.InvalidUrlError);
+    })
+    it('should return Promise in case of valid url.',()=>{
+        let get = HttpClient.get('http://google.com')
+        let cname = get.constructor.name;
+        expect(get).to.be.instanceOf(Promise)
+    })
+  })
 
   describe('`get` Promisified execution handling tests.', ()=> {
 
@@ -53,7 +53,9 @@ describe('Core.HttpClient module exports functional tests.', () => {
           //rejection (rejection id: 1): AssertionError: The instanceof
           //assertion needs a constructor but undefined was given.
           //
-          //expect(err).to.be.instanceOf(HttpClient.errors.NotFoundError);
+          // leads to mocha timeout
+          //    `expect(err).to.be.instanceOf(HttpClient.errors.NotFoundError);`
+          //
           expect(err).to.be.instanceOf(Object);
           done();
         })

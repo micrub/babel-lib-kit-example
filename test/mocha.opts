@@ -1,1 +1,1 @@
---require mocha-clean
+--require mocha-clean --timeout 3000

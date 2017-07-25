@@ -83,6 +83,7 @@ function returnPromise(config) {
               reject(new Error('Maximum redirects limit reached: ' + redirectCount + ' out of ' + config.maxRedirects));
             }else{
               if (config.timeout) {
+                //TODO probably not implemented propperly
                 let timeoutTimer = setTimeout(function () {
                   req.abort()
                   reject(new TimeoutError())
@@ -108,6 +109,7 @@ function returnPromise(config) {
     // Set additional timeout on socket - in case if remote
     // server freeze after sending headers
     if (config.timeout) { // only works on node 0.6+
+      //TODO probably not implemented propperly
       req.setTimeout(config.timeout, function () {
         if (req) {
           req.abort()

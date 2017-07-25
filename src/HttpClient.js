@@ -12,6 +12,12 @@ const request = http.get;
 let urlValidationOptions = {protocols: ['http', 'https'],
   require_protocol:true};
 
+let ETIMEDOUT = new Error("ETIMEDOUT")
+ETIMEDOUT.code = "ETIMEDOUT"
+
+let ESOCKETTIMEDOUT = new Error("ESOCKETTIMEDOUT")
+ESOCKETTIMEDOUT.code = "ESOCKETTIMEDOUT"
+
 function NotFoundError(message, extra) {
   Error.captureStackTrace(this, this.constructor);
   this.name = this.constructor.name;
@@ -47,6 +53,8 @@ function returnPromise(config) {
   return new Promise((resolve, reject)=>{
     let req = request(config, (response) => {
       let statusCode = response.statusCode;
+      let location = response.headers.location;
+      let timeoutTimer;
       if (statusCode < 200) {
         reject(new Error('Failed to load page, status code: ' + response.statusCode));
       } else if (statusCode >= 200 && statusCode < 299){
@@ -55,7 +63,6 @@ function returnPromise(config) {
         response.on('end', () => resolve(body.join('')));
       } else if (response.statusCode >= 300 && response.statusCode < 400 ) {
         if (config.maxRedirects) {
-          let location = response.headers.location;
           if (location && isURL(location)) {
             let redirectCount = 0;
             if (config.redirectCount === null) {
@@ -63,10 +70,15 @@ function returnPromise(config) {
             }else{
               redirectCount = redirectCount + 1;
             }
-            //dbg(location, redirectCount ,maxRedirects);
             if (redirectCount >= config.maxRedirects) {
               reject(new Error('Maximum redirects limit reached: ' + redirectCount + ' out of ' + config.maxRedirects));
             }else{
+              if (config.timeout && !timeoutTimer) {
+                timeoutTimer = setTimeout(function () {
+                  req.abort()
+                  reject(ETIMEDOUT)
+                }, config.timeout)
+              }
               resolve(get(location, redirectCount))
             }
           }else{
@@ -83,6 +95,16 @@ function returnPromise(config) {
         }
       }
     })
+    // Set additional timeout on socket - in case if remote
+    // server freeze after sending headers
+    if (config.timeout) { // only works on node 0.6+
+      req.setTimeout(config.timeout, function () {
+        if (req) {
+          req.abort()
+          reject(ESOCKETTIMEDOUT)
+        }
+      })
+    }
     req.on('error', (err) => {
       reject(err);
     })

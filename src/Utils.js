@@ -11,7 +11,7 @@ const SP = C.SP;
 
 const UNDETECTED = C.UNDETECTED;
 
-function dbgFactory(filename) {
+function dbg(filename) {
   filename = jsBasename(filename) || UNDETECTED;
   const DBG_NS = [NS, filename ].join(SP);
   return debug(DBG_NS);
@@ -48,6 +48,6 @@ function jsBasename(filename) {
   }
 }
 
-let Utils = { jsBasename , djb2, dbgFactory, NS, SP };
+let Utils = { jsBasename , djb2, dbg, NS, SP };
 
 export default Utils;

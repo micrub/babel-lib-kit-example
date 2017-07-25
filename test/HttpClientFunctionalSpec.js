@@ -1,6 +1,9 @@
 import { expect } from 'chai';
 import debug from 'debug';
 import Core from '../src/index';
+import Utils from '../src/Utils';
+
+let dbg = Utils.dbg(__filename)
 
 
 describe('Core.HttpClient module exports functional tests.', () => {
@@ -37,6 +40,7 @@ describe('Core.HttpClient module exports functional tests.', () => {
     it('execution success . Return non empty string.',(done)=>{
         let get = HttpClient.get('http://google.com')
         get.then((response) => {
+          dbg(response);
           expect(typeof response).to.be.eq('string')
           done();
         })

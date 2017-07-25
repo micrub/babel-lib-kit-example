@@ -1,12 +1,58 @@
 
+
+import { inherits } from 'util';
+
+
+function HttpNotFoundError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.code = 404;
+  this.message = 'Url not found : ' + message;
+  this.extra = extra;
+};
+
+function TimeoutError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  //this.code = "ETIMEDOUT"
+  this.message = 'ETIMEOUT'
+  this.extra = extra;
+};
+
+function SocketTimeoutError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  //this.code = "ESOCKETTIMEDOUT"
+  this.message = "ESOCKETTIMEDOUT"
+  this.extra = extra;
+};
+function InvalidUrlError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.message = 'Passed url must be valid :' + message;
+  this.extra = extra;
+};
+function EmptyUrlError(message, extra) {
+  Error.captureStackTrace(this, this.constructor);
+  this.name = this.constructor.name;
+  this.message = 'Url must be NON empty string.';
+  this.extra = extra;
+};
+
+let errors = {InvalidUrlError, EmptyUrlError,
+  HttpNotFoundError,TimeoutError,SocketTimeoutError};
+
+for (var prop in errors) {
+  let errorFnk = errors[prop];
+  inherits(errorFnk, Error);
+}
+
 import http from 'http';
 import Utils from './Utils';
-import HttpClientErrors from './HttpClientErrors';
 import { parse as urlParse } from 'url';;
 import isURL from 'validator/lib/isURL';
 
 const dbg = Utils.dbg(__filename);
-let errors = HttpClientErrors;
 
 const request = http.get;
 
@@ -17,16 +63,14 @@ function returnPromise(config) {
 
   return new Promise((resolve, reject)=>{
     let req = request(config, (response) => {
-      let statusCode = response.statusCode;
-      let location = response.headers.location;
-      if (statusCode < 200) {
+      if (response.statusCode < 200) {
         reject(new Error('Failed to load page, status code: ' + response.statusCode));
-      } else if (statusCode >= 200 && statusCode < 299){
+      } else if (response.statusCode >= 200 && response.statusCode < 299){
         let body = [];
         response.on('data', (chunk) => body.push(chunk));
         response.on('end', () => resolve(body.join('')));
       } else if (response.statusCode >= 300 && response.statusCode < 400 ) {
-        let timeoutTimer;
+        let location = response.headers.location;
         if (config.maxRedirects) {
           if (location && isURL(location)) {
             let redirectCount = 0;
@@ -38,13 +82,12 @@ function returnPromise(config) {
             if (redirectCount >= config.maxRedirects) {
               reject(new Error('Maximum redirects limit reached: ' + redirectCount + ' out of ' + config.maxRedirects));
             }else{
-              if (config.timeout && !timeoutTimer) {
-                //TODO fix time usage
-                timeoutTimer = setTimeout(function () {
-                  req.abort()
-                  reject(new errors.TimeoutError())
-                }, config.timeout)
-              }
+              //if (config.timeout) {
+                //let timeoutTimer = setTimeout(function () {
+                  //req.abort()
+                  //reject(new TimeoutError())
+                //}, config.timeout)
+              //}
               resolve(get(location, redirectCount))
             }
           }else{
@@ -54,25 +97,26 @@ function returnPromise(config) {
           resolve(get(location))
         }
       } else {
-        if (statusCode === 404) {
-          location = location || config.href || 'UNDEtected';
-          reject(new errors.HttpNotFoundError(location));
+        if (response.statusCode === 404) {
+          let href = config.href || 'UNDEtected';
+          reject(new Error(href));
         } else {
-          reject(new Error('Http status code: ' + statusCode));
+          reject(new Error('Http status code: ' + response.statusCode));
         }
       }
     })
     // Set additional timeout on socket - in case if remote
     // server freeze after sending headers
-    if (config.timeout) { // only works on node 0.6+
-      req.setTimeout(config.timeout, function () {
-        if (req) {
-          req.abort()
-          reject(new errors.SocketTimeoutError())
-        }
-      })
-    }
+    //if (config.timeout) { // only works on node 0.6+
+      //req.setTimeout(config.timeout, function () {
+        //if (req) {
+          //req.abort()
+          //reject(new SocketTimeoutError())
+        //}
+      //})
+    //}
     req.on('error', (err) => {
+      console.log(err);
       reject(err);
     })
     req.end();
@@ -82,7 +126,7 @@ function returnPromise(config) {
 function get(url, isRedirect = null) {
   if (typeof url === 'string' && url.length) {
     if (!isURL(url, urlValidationOptions)) {
-      return new errors.InvalidUrlError(url)
+      return new InvalidUrlError(url)
     } else {
       const parsedUrl = urlParse(url);
       const defaults = { method: 'get', timeout: 1000, maxRedirects: 5 };
@@ -94,7 +138,7 @@ function get(url, isRedirect = null) {
       return returnPromise(config);
     }
   } else {
-    return new errors.EmptyUrlError();
+    return new EmptyUrlError();
   }
 }
 

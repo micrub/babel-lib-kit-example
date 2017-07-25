@@ -1,52 +1,17 @@
 
 import http from 'http';
 import Utils from './Utils';
+import HttpClientErrors from './HttpClientErrors';
 import { parse as urlParse } from 'url';;
 import isURL from 'validator/lib/isURL';
-import { inherits } from 'util';
 
-const dbg = Utils.dbgFactory(__filename);
+const dbg = Utils.dbg(__filename);
+let errors = HttpClientErrors;
 
 const request = http.get;
 
 let urlValidationOptions = {protocols: ['http', 'https'],
   require_protocol:true};
-
-let ETIMEDOUT = new Error("ETIMEDOUT")
-ETIMEDOUT.code = "ETIMEDOUT"
-
-let ESOCKETTIMEDOUT = new Error("ESOCKETTIMEDOUT")
-ESOCKETTIMEDOUT.code = "ESOCKETTIMEDOUT"
-
-function NotFoundError(message, extra) {
-  Error.captureStackTrace(this, this.constructor);
-  this.name = this.constructor.name;
-  this.message = 'Passed url not found: 404 ' + message;
-  this.extra = extra;
-};
-function InvalidUrlError(message, extra) {
-  Error.captureStackTrace(this, this.constructor);
-  this.name = this.constructor.name;
-  this.message = 'Passed url must be valid :' + message;
-  this.extra = extra;
-};
-function EmptyUrlError(message, extra) {
-  Error.captureStackTrace(this, this.constructor);
-  this.name = this.constructor.name;
-  this.message = 'Url must be NON empty string.';
-  this.extra = extra;
-};
-
-let errors = {InvalidUrlError, EmptyUrlError, NotFoundError};
-
-for (var prop in errors) {
-  let errorFnk = errors[prop];
-  inherits(errorFnk, Error);
-}
-
-function hasHeader(header,headers) {
-  return headers.includes(header)
-}
 
 function returnPromise(config) {
 
@@ -54,7 +19,6 @@ function returnPromise(config) {
     let req = request(config, (response) => {
       let statusCode = response.statusCode;
       let location = response.headers.location;
-      let timeoutTimer;
       if (statusCode < 200) {
         reject(new Error('Failed to load page, status code: ' + response.statusCode));
       } else if (statusCode >= 200 && statusCode < 299){
@@ -62,6 +26,7 @@ function returnPromise(config) {
         response.on('data', (chunk) => body.push(chunk));
         response.on('end', () => resolve(body.join('')));
       } else if (response.statusCode >= 300 && response.statusCode < 400 ) {
+        let timeoutTimer;
         if (config.maxRedirects) {
           if (location && isURL(location)) {
             let redirectCount = 0;
@@ -74,9 +39,10 @@ function returnPromise(config) {
               reject(new Error('Maximum redirects limit reached: ' + redirectCount + ' out of ' + config.maxRedirects));
             }else{
               if (config.timeout && !timeoutTimer) {
+                //TODO fix time usage
                 timeoutTimer = setTimeout(function () {
                   req.abort()
-                  reject(ETIMEDOUT)
+                  reject(new errors.TimeoutError())
                 }, config.timeout)
               }
               resolve(get(location, redirectCount))
@@ -89,7 +55,8 @@ function returnPromise(config) {
         }
       } else {
         if (statusCode === 404) {
-          reject(new NotFoundError(location, response.body));
+          location = location || config.href || 'UNDEtected';
+          reject(new errors.HttpNotFoundError(location));
         } else {
           reject(new Error('Http status code: ' + statusCode));
         }
@@ -101,7 +68,7 @@ function returnPromise(config) {
       req.setTimeout(config.timeout, function () {
         if (req) {
           req.abort()
-          reject(ESOCKETTIMEDOUT)
+          reject(new errors.SocketTimeoutError())
         }
       })
     }
@@ -115,7 +82,7 @@ function returnPromise(config) {
 function get(url, isRedirect = null) {
   if (typeof url === 'string' && url.length) {
     if (!isURL(url, urlValidationOptions)) {
-      return new InvalidUrlError(url)
+      return new errors.InvalidUrlError(url)
     } else {
       const parsedUrl = urlParse(url);
       const defaults = { method: 'get', timeout: 1000, maxRedirects: 5 };
@@ -127,7 +94,7 @@ function get(url, isRedirect = null) {
       return returnPromise(config);
     }
   } else {
-    return new EmptyUrlError();
+    return new errors.EmptyUrlError();
   }
 }
 

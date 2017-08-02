@@ -1,1 +1,1 @@
---require mocha-clean --timeout 3000
+--compilers js:babel-register --require mocha-clean --timeout 3000

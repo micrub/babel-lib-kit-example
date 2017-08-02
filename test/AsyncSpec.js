@@ -16,10 +16,17 @@ describe('Async from Core module exports', () => {
   })
 
   describe('`request` function', () => {
-    it('should return value while executing ASYNC work.', () => {
-      let result = Async.request();
-      expect(result).to.be.true;
+    it('should return value while executing ASYNC work.', (done) => {
+      let req = Async.request('http://ifconfig.co/')
+      //console.log(req);
+      done()
     })
+    //it('should return value while executing ASYNC work.', (done) => {
+      //let req = Async.request('http://google.com')
+      //req.then((res)=>{
+        //console.log(res);
+      //})
+    //})
   })
 
 })

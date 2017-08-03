@@ -3,20 +3,45 @@ import Constants from './Constants';
 
 import path from 'path';
 import debug from 'debug';
+import localStorage from 'localStorage';
+
+
+// node doesnt have debug function of console
+console.debug = console.debug || console.info;
 
 const C = Constants;
 
 const NS = C.PACKAGE_NS;
 const SP = C.SP;
-
+const DEBUG = C.DEBUG;
+const DEBUG_LOCAL_STORAGE_NS = 'debug';
 const UNDETECTED = C.UNDETECTED;
 
-function dbg(filename) {
-  filename = jsBasename(filename) || UNDETECTED;
-  const DBG_NS = [NS, filename ].join(SP);
-  let dfnk = debug(DBG_NS);
-  return dfnk;
+let dbg = () => {};
+
+if (NS) {
+  if (DEBUG) {
+    dbg = (filename) => {
+      filename = jsBasename(filename) || UNDETECTED;
+      const DBG_NS = [NS, filename ].join(SP);
+      let dfnk = debug(DBG_NS);
+      return dfnk;
+    }
+    let pattern = [NS,SP,'*'].join();
+    if (!localStorage.getItem(DEBUG_LOCAL_STORAGE_NS)) {
+      console.debug('debug enabled for:' , pattern );
+      console.debug('see localStorage `debug` item');
+      console.debug('ATTENTION! application debug console messages will be show only after page reload.');
+      localStorage.setItem(DEBUG_LOCAL_STORAGE_NS, pattern);
+    }
+  } else {
+    console.debug('debug disabed.');
+    localStorage.removeItem(DEBUG_LOCAL_STORAGE_NS);
+  }
 }
+
+
+
 
 let START_HASH_VALUE = 5381;
 

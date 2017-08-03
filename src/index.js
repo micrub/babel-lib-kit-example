@@ -2,10 +2,10 @@ import Async from './async/index';
 import HttpClient from './HttpClient';
 import Utils from './Utils';
 
-//Utils.debug.enable();
 
-//Utils.dbg(__filename)('z');
-console.log('z');
+
+Utils.dbg(__filename)('zzz');
+//console.log('z', new Date().toString());
 
 const Core = {
   Async,

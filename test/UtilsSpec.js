@@ -26,7 +26,7 @@ describe('Core.Utils module exports tests.', () => {
   })
   it('should have property `SP` equals to "-".', () => {
     let C = Utils.SP;
-    expect(C).to.be.eq('-')
+    expect(C).to.be.eq(':')
   })
   it('should have property `djb2` that is instance of `Function`.', () => {
     expect(Utils.djb2).to.be.instanceOf(Function);

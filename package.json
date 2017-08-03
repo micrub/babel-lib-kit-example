@@ -9,7 +9,7 @@
     "pre-run": "yarn install",
     "test": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha",
     "test:watch": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha --watch",
-    "bbuild": "npm test && $(npm bin)/browserify src/index.js -o dist/index.js -t [ babelify ]",
+    "browerify-build": "npm test && $(npm bin)/browserify src/index.js -o dist/index.js -t [ babelify ]",
     "build": "npm test && $(npm bin)/webpack"
   },
   "dependencies": {

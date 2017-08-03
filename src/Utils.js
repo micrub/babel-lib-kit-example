@@ -17,7 +17,9 @@ const DEBUG = C.DEBUG;
 const DEBUG_LOCAL_STORAGE_NS = 'debug';
 const UNDETECTED = C.UNDETECTED;
 
-let dbg = () => {};
+let dbg = () => {
+  return () => {};
+};
 
 if (NS) {
   if (DEBUG) {

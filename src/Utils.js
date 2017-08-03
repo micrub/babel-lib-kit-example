@@ -14,7 +14,8 @@ const UNDETECTED = C.UNDETECTED;
 function dbg(filename) {
   filename = jsBasename(filename) || UNDETECTED;
   const DBG_NS = [NS, filename ].join(SP);
-  return debug(DBG_NS);
+  let dfnk = debug(DBG_NS);
+  return dfnk;
 }
 
 let START_HASH_VALUE = 5381;
@@ -48,6 +49,6 @@ function jsBasename(filename) {
   }
 }
 
-let Utils = { jsBasename , djb2, dbg, NS, SP };
+let Utils = { jsBasename , djb2, debug, dbg, NS, SP };
 
 export default Utils;

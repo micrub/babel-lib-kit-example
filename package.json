@@ -9,7 +9,7 @@
     "pre-run": "yarn install",
     "test": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha",
     "test:watch": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha --watch",
-    "build": "npm run pre-run && $(npm bin)/webpack"
+    "build": "npm test && $(npm bin)/webpack"
   },
   "dependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.23.0",

@@ -17,6 +17,13 @@ const DEBUG = C.DEBUG;
 const DEBUG_LOCAL_STORAGE_NS = 'debug';
 const UNDETECTED = C.UNDETECTED;
 
+
+let isNode = false;
+
+if (typeof module !== 'undefined' && module.exports) {
+  isNode = true;
+}
+
 let dbg = () => {
   return () => {};
 };
@@ -30,15 +37,20 @@ if (NS) {
       return dfnk;
     }
     let pattern = [NS,SP,'*'].join();
-    if (!localStorage.getItem(DEBUG_LOCAL_STORAGE_NS)) {
-      console.debug('debug enabled for:' , pattern );
-      console.debug('see localStorage `debug` item');
-      console.debug('ATTENTION! application debug console messages will be show only after page reload.');
-      localStorage.setItem(DEBUG_LOCAL_STORAGE_NS, pattern);
+    if (!isNode) {
+      if (!localStorage.getItem(DEBUG_LOCAL_STORAGE_NS)) {
+        console.debug('debug enabled for:' , pattern );
+        console.debug('see localStorage `debug` item');
+        console.debug('ATTENTION! application debug console messages will be show only after page reload.');
+        localStorage.setItem(DEBUG_LOCAL_STORAGE_NS, pattern);
+      }
+
     }
   } else {
-    console.debug('debug disabed.');
-    localStorage.removeItem(DEBUG_LOCAL_STORAGE_NS);
+    if (!isNode) {
+      console.debug('debug disabed.');
+      localStorage.removeItem(DEBUG_LOCAL_STORAGE_NS);
+    }
   }
 }
 

@@ -7,5 +7,15 @@
     <script src="index.js"></script>
   </head>
   <body>
+    <script charset="utf-8">
+       var dbg = window.babelKit.default.Utils.dbg('client.js');
+       var debug = window.babelKit.default.Utils.debug;
+       dbg('from body');
+       var req = window.babelKit.default.Async.request;
+       var resp = req("http://localhost.com:8080/favicon.ico");
+       resp.then(function (response) {
+         dbg('got response');
+       });
+    </script>
   </body>
 </html>

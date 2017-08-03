@@ -1,14 +1,13 @@
 
-import HttpClient from './../HttpClient';
+import HttpClient from './../HttpClient'
 
-function request(url) {
-  let p = HttpClient.get(url);
-  console.log(p);
-  return p;
+function request (url) {
+  let result = HttpClient.get(url)
+  return result
 }
 
 const Async = {
   request
-};
+}
 
-export default Async;
+export default Async

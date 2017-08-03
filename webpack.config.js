@@ -30,8 +30,12 @@ const copyOptions = [
  module.exports = {
      entry: './src/index.js',
      output: {
-         path: path.resolve(__dirname, OUT_DIR),
-         filename: 'index.js',
+       // export itself to a global var
+       libraryTarget: "var",
+       // name of the global var: "babelKit"
+       library: "babelKit",
+       path: path.resolve(__dirname, OUT_DIR),
+       filename: 'index.js',
      },
      plugins: [
        new WebpackBeforeBuildPlugin(function(compiler, callback) {

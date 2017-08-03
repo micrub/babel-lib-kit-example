@@ -6,11 +6,14 @@
   "author": "Michael Rubanov <mrubanov@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "pre-run": "yarn install",
+    "pre-build-prod": "yarn && $(npm bin)/eslint src test",
+    "pre-build-dev": "echo 'pre-build'",
+    "pre-run": "echo 'pre-run'",
     "test": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha",
     "test:watch": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha --watch",
-    "browserify-build": "npm test && $(npm bin)/browserify src/index.js -o dist/index.js -t [ babelify ]",
-    "build": "npm test && $(npm bin)/webpack"
+    "build:browserify": "npm run prebuild && npm test && $(npm bin)/browserify src/index.js -o dist/browserify-build.js -t [ babelify ]",
+    "build": "npm run pre-build-dev && $(npm bin)/webpack",
+    "build:production": "npm run pre-build-prod && $(npm bin)/webpack"
   },
   "dependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
@@ -30,6 +33,12 @@
     "browserify": "^14.4.0",
     "chai": "^4.1.0",
     "copy-webpack-plugin": "^4.0.1",
+    "eslint": "^4.3.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.4.2",
     "mocha-clean": "^1.0.0",
     "webpack": "^3.3.0",

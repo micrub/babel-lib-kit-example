@@ -7,7 +7,7 @@ const fs = require('fs');
 
 let CopyWebpackPlugin = require('copy-webpack-plugin');
 let WebpackBeforeBuildPlugin = require('before-build-webpack');
-let WebpackShellPlugin = require('./lib/WebpackShellPlugin');
+//let WebpackShellPlugin = require('webpack-shell-plugin');
 
 let packageJson = require('./package.json');
 
@@ -38,11 +38,11 @@ const copyOptions = [
          cleanPackageJson(packageJson);
          callback(); //don't call it if you do want to stop compilation
        }),
-       new CopyWebpackPlugin(copyOptions),
-       new WebpackShellPlugin({
-         onBuildStart: ['echo "start build"'],
-         onBuildEnd: ['rm ' + TMP_PKG_FILE + '&& echo "Finished"']
-       }),
+       new CopyWebpackPlugin(copyOptions)
+       //new WebpackShellPlugin({
+         //onBuildStart: ['echo "start build"'],
+         //onBuildEnd: ['rm ' + TMP_PKG_FILE + ' && echo "Finished"']
+       //})
      ],
      module: {
          loaders: [{
@@ -50,9 +50,12 @@ const copyOptions = [
              exclude: /(node_modules|bower_components|resources)/,
              loader: 'babel-loader',
              options: {
-               cacheDirectory: true,
+               //cacheDirectory: true,
                presets : ["env"],
-               plugins : [require("babel-plugin-transform-runtime")]
+               plugins : [
+                 require("babel-plugin-transform-runtime"),
+                 require("babel-plugin-transform-async-to-generator")
+               ]
              }
          }]
      }

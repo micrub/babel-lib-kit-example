@@ -1,27 +1,38 @@
 {
   "name": "babel-lib-kit",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "private": true,
   "author": "Michael Rubanov <mrubanov@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --compilers js:babel-register",
-    "build": "./node_modules/.bin/webpack"
+    "pre-run": "yarn install",
+    "test": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha",
+    "test:watch": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha --watch",
+    "browserify-build": "npm test && $(npm bin)/browserify src/index.js -o dist/index.js -t [ babelify ]",
+    "build": "npm test && $(npm bin)/webpack"
   },
   "dependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-runtime": "^6.23.0",
-    "debug": "^2.6.8"
+    "debug": "^2.6.8",
+    "localStorage": "^1.0.3",
+    "validator": "^8.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-loader": "^7.1.1",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
+    "babelify": "^7.3.0",
     "before-build-webpack": "^0.1.0",
+    "browserify": "^14.4.0",
     "chai": "^4.1.0",
     "copy-webpack-plugin": "^4.0.1",
     "mocha": "^3.4.2",
-    "webpack": "^3.3.0"
+    "mocha-clean": "^1.0.0",
+    "webpack": "^3.3.0",
+    "webpack-shell-plugin": "^0.5.0"
   }
 }

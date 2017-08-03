@@ -1,12 +1,13 @@
-/* jshint esnext:true */
+import Async from './async/index';
+import HttpClient from './HttpClient';
+import Utils from './Utils';
 
-import debug from 'debug';
-let d = debug('Core');
-d.enabled= true;
+Utils.dbg(__filename)('loaded');
 
-let Core = {};
-
-console.log('Loaded');
-d('D Loaded');
+const Core = {
+  Async,
+  HttpClient,
+  Utils
+};
 
 export default Core;

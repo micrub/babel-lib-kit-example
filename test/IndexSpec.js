@@ -1,10 +1,26 @@
 import { expect } from 'chai';
+import debug from 'debug';
 import Core from '../src/index';
+import AsyncCore from '../src/async';
 
-describe('Core module export', () => {
+const dbg = debug('Core');
 
-  it('should be instance of Object', () => {
-    expect(Core).to.be.instanceOf(Object)
+describe('Core module exports', () => {
+
+
+  it('should be instance of `Object` and has `Object` constructor.', () => {
+    expect(Core).to.be.instanceOf(Object);
+    expect(Core.constructor.name).to.be.eq('Object');
+  })
+
+  it('should have property `Async` that is instance of `Object` and has `Object` constructor.', () => {
+    expect(Core.Async).to.be.instanceOf(Object);
+    expect(Core.Async.constructor.name).to.be.eq('Object');
+  })
+
+  it('should have property `HttpClient` that is instance of `Object` and has `Object` constructor.', () => {
+    expect(Core.HttpClient).to.be.instanceOf(Object);
+    expect(Core.HttpClient.constructor.name).to.be.eq('Object');
   })
 
 })

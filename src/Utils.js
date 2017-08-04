@@ -47,7 +47,7 @@ if (NS) {
     }
   } else {
     if (!isNode) {
-      console.debug(pattern,'debug disabed.')
+      console.debug(pattern, 'debug disabed.')
       localStorage.removeItem(DEBUG_LOCAL_STORAGE_NS)
     }
   }

@@ -1,14 +1,15 @@
 {
   "name": "babel-lib-kit",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "index.js",
   "private": true,
   "author": "Michael Rubanov <mrubanov@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "pre-build-prod": "yarn && $(npm bin)/eslint src test",
+    "pre-build-prod": "yarn && npm run lint",
+    "lint": "$(npm bin)/eslint src test",
     "pre-build-dev": "echo 'pre-build'",
-    "pre-run": "echo 'pre-run'",
+    "pre-run": "yarn",
     "test": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha",
     "test:watch": "npm run pre-run && DEBUG=babel-lib-kit* $(npm bin)/mocha --watch",
     "build:browserify": "npm run prebuild && npm test && $(npm bin)/browserify src/index.js -o dist/browserify-build.js -t [ babelify ]",

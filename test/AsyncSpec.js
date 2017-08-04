@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import Core from '../src/index'
 import HttpClient from '../src/HttpClient'
+import validator from 'validator'
 
 const Async = Core.Async
 
@@ -25,7 +26,7 @@ describe('Async from Core module exports', () => {
       let myip = await Async.request('http://ifconfig.co/ip')
       myip = myip.replace('\n', '')
       expect(typeof myip).to.be.eq('string')
-      expect(myip).to.be.eq('212.143.153.72')
+      expect(validator.isIP(myip)).to.be.eq(true)
     })
     it('should return string values of many requests.', async () => {
       let myip = await Async.request('http://ifconfig.co/ip')
@@ -33,12 +34,11 @@ describe('Async from Core module exports', () => {
 
       myip = myip.replace('\n', '')
       mycountry = mycountry.replace('\n', '')
-      let result = myip + ' ' + mycountry
 
       expect(typeof myip).to.be.eq('string')
+      expect(validator.isIP(myip)).to.be.eq(true)
       expect(typeof mycountry).to.be.eq('string')
-
-      expect(result).to.be.eq('212.143.153.72 Israel')
+      expect(mycountry.length > 0).to.be.eq(true)
     })
   })
 })

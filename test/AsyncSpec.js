@@ -34,7 +34,6 @@ describe('Async from Core module exports', () => {
 
       myip = myip.replace('\n', '')
       mycountry = mycountry.replace('\n', '')
-      let result = myip + ' ' + mycountry
 
       expect(typeof myip).to.be.eq('string')
       expect(validator.isIP(myip)).to.be.eq(true)

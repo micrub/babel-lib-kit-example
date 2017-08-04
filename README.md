@@ -1,5 +1,7 @@
 # Babel compiler based Javascript application starter kit, with build process for Node.js and browser environments.
 
+![Travis `develop` branch build](https://travis-ci.org/micrub/babel-lib-kit.svg?branch=develop "Travis `develop` branch build")
+
 Starter kit using based on `yarn`, `babel-presets-env`, `webpack` and `browserify`.
 
 # Getting started
